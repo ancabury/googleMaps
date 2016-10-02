@@ -2,43 +2,26 @@
 
 <html>
   <head>
-    <style type="text/css">
-      html, body {
-        margin: 0;
-        padding:  0;
-        height: 100%;
-      }
-      #map {
-        height: 100%;
-        width: 100%;
-      }
-    </style>
+    <link rel='stylesheet' type='text/css' href='base.css'>
   </head>
 
   <body>
+    <div class='container'>
+      <div class="options-box">
+        <h1> Options area </h1>
 
-    <div id='map'> </div>
+        <div>
+          <input id="show-listings" type="button" value="Show">
+          <input id="hide-listings" type="button" value="Hide">
+        </div>
+      </div>
 
-    <script type="text/javascript">
-      var map;
+      <div id='map'> </div>
 
-      function initMap(){
-        map = new google.maps.Map(document.getElementById('map'), {
-          center: { lat: 46.77121, lng: 23.623635 },
-          zoom: 13
-          });
-
-        var oradeaCoord = { lat: 47.046501, lng: 21.918944 };
-        var marker = new google.maps.Marker({
-          position: oradeaCoord,
-          map: map,
-          title: 'Here is Oradea!'
-        });
-      }
-    </script>
-
+    </div>
+    <script type='text/javascript' src='google-maps.js'> </script>
     <script async defer
-      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAe2v4Xx_jWuZWC-dg3sGPTN4_MTR48mXg&v=3&callback=initMap"
+      src='https://maps.googleapis.com/maps/api/js?key=AIzaSyAe2v4Xx_jWuZWC-dg3sGPTN4_MTR48mXg&v=3&callback=initMap'
       >
     </script>
   </body>
