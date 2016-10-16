@@ -72,6 +72,9 @@ function searchWithinPolygon(){
     else
       m.setMap(null);
   });
+
+  var area = google.maps.geometry.spherical.computeArea(polygon.getPath());
+  alert('Area is: ' + area + ' m^2');
 };
 
 function initMap(){
