@@ -1,4 +1,4 @@
-var map, markers;
+var map, markers, polygon;
 
 function createStreetView(marker, info){
   var streetView = new google.maps.StreetViewService();
@@ -26,7 +26,53 @@ function createStreetView(marker, info){
   streetView.getPanoramaByLocation(marker.position, radius, getStreeView);
 
   info.open(map, marker);
-}
+};
+
+function drawOverMap(){
+  var drawingManager = new google.maps.drawing.DrawingManager({
+    drawingMode: google.maps.drawing.OverlayType.POLYGON,
+    drawingControl: true,
+    drawingControlOptions: {
+      position: google.maps.ControlPosition.TOP_LEFT,
+      drawingModes: [google.maps.drawing.OverlayType.POLYGON]
+    }
+  });
+
+  document.getElementById('toggle-drawing').addEventListener('click', function(){
+    if (drawingManager.map){
+      drawingManager.setMap(null);
+      if(polygon)
+        polygon.setMap(null);
+    }
+    else{
+      drawingManager.setMap(map);
+      hideListings();
+    }
+  })
+
+  drawingManager.addListener('overlaycomplete', function(event){
+    if (polygon){
+      polygon.setMap(null);
+      hideListings();
+    }
+    drawingManager.setDrawingMode(null);
+    polygon = event.overlay;
+    polygon.setEditable(true);
+    searchWithinPolygon();
+
+    polygon.getPath().addListener('set_at', searchWithinPolygon);
+    polygon.getPath().addListener('insert_at', searchWithinPolygon);
+  });
+};
+
+function searchWithinPolygon(){
+  markers.forEach(function(m){
+    if (google.maps.geometry.poly.containsLocation(m.position, polygon))
+      m.setMap(map);
+    else
+      m.setMap(null);
+  });
+};
 
 function initMap(){
   map = new google.maps.Map(document.getElementById('map'), {
@@ -66,16 +112,26 @@ function initMap(){
   });
 
   map.fitBounds(bounds);
+
+  drawOverMap();
 }
 
 document.getElementById('show-listings').addEventListener('click', function(){
-  markers.forEach(function(m){
-    m.setMap(map);
-  });
+  showListings();
 });
 
 document.getElementById('hide-listings').addEventListener('click', function(){
+  hideListings()
+});
+
+function hideListings(){
   markers.forEach(function(m){
     m.setMap(null);
   });
-});
+}
+
+function showListings(){
+  markers.forEach(function(m){
+    m.setMap(map);
+  });
+}
