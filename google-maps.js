@@ -1,5 +1,33 @@
 var map, markers;
 
+function createStreetView(marker, info){
+  var streetView = new google.maps.StreetViewService();
+  var radius = 50;
+
+  function getStreeView(data, status){
+    if (status == google.maps.StreetViewStatus.OK){
+      var nearLocation = data.location.latLng;
+      var heading = google.maps.geometry.spherical.computeHeading(nearLocation, marker.position);
+      info.setContent('<div>' + marker.title + '</div><div id="panorama"></div>');
+      var panoramaOptions = {
+        position: nearLocation,
+        pov: {
+          heading: heading,
+          pitch: 30
+        }
+      };
+      var panorama = new google.maps.StreetViewPanorama(document.getElementById('panorama'), panoramaOptions);
+    }
+    else{
+      info.setContent('<div>' + marker.title + '</div><div>No panorama found ! :(</div>');
+    }
+  };
+
+  streetView.getPanoramaByLocation(marker.position, radius, getStreeView);
+
+  info.open(map, marker);
+}
+
 function initMap(){
   map = new google.maps.Map(document.getElementById('map'), {
     center: { lat: 46.77121, lng: 23.623635 },
@@ -26,14 +54,12 @@ function initMap(){
 
   var bounds = new google.maps.LatLngBounds();
 
+  // populate info window
   markers.forEach(function(m){
-    var info = new google.maps.InfoWindow({
-      content: m.title + '!\n' +
-        'Position: ' + m.position
-    });
+    var info = new google.maps.InfoWindow();
 
     m.addListener('click', function(){
-      info.open(map, m);
+      createStreetView(m, info);
     });
 
     bounds.extend(m.position);
