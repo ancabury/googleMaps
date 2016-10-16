@@ -149,6 +149,67 @@ document.getElementById('zoom-to-area').addEventListener('click', function(){
   }
 });
 
+document.getElementById('search-within-time').addEventListener('click', function(){
+  var distanceMatrixService = new google.maps.DistanceMatrixService();
+  var destination = document.getElementById('search-within-time-text').value;
+  if (destination == ''){
+    alert('No address specified.');
+  }
+  else{
+    hideListings();
+    var origins = [];
+    for(var i = 0; i < markers.length; i++){
+      origins[i] = markers[i].position;
+    }
+    var mode = document.getElementById('mode').value;
+    distanceMatrixService.getDistanceMatrix({
+      origins: origins,
+      destinations: [destination],
+      travelMode: google.maps.TravelMode[mode],
+      unitSystem: google.maps.UnitSystem.IMPERIAL
+    }, function(response, status){
+      if (status == google.maps.DistanceMatrixStatus.OK){
+        displayMarkersWithin(response);
+      }
+      else
+        alert('There was an error');
+    });
+  }
+});
+
+function displayMarkersWithin(response){
+  var maxDuration = document.getElementById('max-duration').value;
+  var origins = response.originAddresses;
+  var destinations = response.destinationAddresses;
+  var atLeastOne = false;
+  for (var i = 0; i < origins.length; i++) {
+    var results = response.rows[i].elements;
+    for (var j = 0; j < results.length; j++) {
+      var element = results[j];
+      if (element.status === "OK") {
+        var distanceText = element.distance.text;
+        var duration = element.duration.value / 60;
+        var durationText = element.duration.text;
+        if (duration <= maxDuration) {
+          markers[i].setMap(map);
+          atLeastOne = true;
+          var infowindow = new google.maps.InfoWindow({
+            content: durationText + ' away, ' + distanceText
+          });
+          infowindow.open(map, markers[i]);
+          markers[i].infowindow = infowindow;
+          google.maps.event.addListener(markers[i], 'click', function() {
+            this.infowindow.close();
+          });
+        }
+      }
+    }
+  }
+  if (!atLeastOne) {
+    window.alert('We could not find any locations within that distance!');
+  }
+}
+
 function hideListings(){
   markers.forEach(function(m){
     m.setMap(null);
