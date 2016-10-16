@@ -127,6 +127,28 @@ document.getElementById('hide-listings').addEventListener('click', function(){
   hideListings()
 });
 
+document.getElementById('zoom-to-area').addEventListener('click', function(){
+  var geocoder = new google.maps.Geocoder();
+  var address = document.getElementById('zoom-to-area-text').value;
+  if (address == ''){
+    alert('No address specified.');
+  }
+  else{
+    geocoder.geocode({
+      address: address,
+      componentRestrictions: { locality: 'Cluj Napoca' }
+    }, function(results, status){
+      if (status == google.maps.GeocoderStatus.OK){
+        map.setCenter(results[0].geometry.location);
+        map.setZoom(15);
+      }
+      else{
+        alert('Location could not be found !');
+      }
+    });
+  }
+});
+
 function hideListings(){
   markers.forEach(function(m){
     m.setMap(null);

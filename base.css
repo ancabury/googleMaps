@@ -49,3 +49,12 @@ h1 {
   position: relative;
   margin-left: 10px;
 }
+
+#zoom-to-area-text {
+  position: relative;
+  width: 70%;
+}
+
+#zoom-to-are {
+  width: 24%;
+}
