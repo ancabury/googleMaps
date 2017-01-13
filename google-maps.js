@@ -1,4 +1,5 @@
-var map, markers, polygon;
+var map, markers, polygon
+var placesMarkers = [];
 
 function createStreetView(marker, info){
   var streetView = new google.maps.StreetViewService();
@@ -46,14 +47,14 @@ function drawOverMap(){
     }
     else{
       drawingManager.setMap(map);
-      hideListings();
+      hideListings(markers);
     }
   })
 
   drawingManager.addListener('overlaycomplete', function(event){
     if (polygon){
       polygon.setMap(null);
-      hideListings();
+      hideListings(markers);
     }
     drawingManager.setDrawingMode(null);
     polygon = event.overlay;
@@ -117,6 +118,63 @@ function initMap(){
   map.fitBounds(bounds);
 
   drawOverMap();
+
+  var zoomAutocomplete = new google.maps.places.Autocomplete(
+    document.getElementById('zoom-to-area-text')
+  );
+  var timeAutocomplete = new google.maps.places.Autocomplete(
+    document.getElementById('search-within-time-text'),
+    {
+      types: ['establishment']
+    }
+  );
+
+  var searchBox = new google.maps.places.SearchBox(
+    document.getElementById('places-search')
+  );
+  searchBox.addListener('places_changed', function() {
+    searchBoxPlaces(this);
+  });
+
+  document.getElementById('go-search-places').addEventListener('click', function() {
+    hideListings(placesMarkers);
+    var placesService = new google.maps.places.PlacesService(map);
+    placesService.textSearch({
+      query: document.getElementById('places-search').value
+    }, function(results, status){
+      if (status == google.maps.places.PlacesServiceStatus.OK)
+        createPlacesMarkers(results);
+    });
+  });
+}
+
+function searchBoxPlaces(searchBox) {
+    hideListings(placesMarkers);
+    var places = searchBox.getPlaces();
+    if (places.length == 0)
+      window.alert('There are no places matching your query.');
+    else
+      createPlacesMarkers(places);
+}
+
+function createPlacesMarkers(places) {
+  places.forEach(function(place){
+    var icon = {
+      url: place.icon,
+      size: new google.maps.Size(25, 25),
+      origin: new google.maps.Point(0, 0),
+      anchor: new google.maps.Point(15, 34)
+    }
+
+    var marker = new google.maps.Marker({
+      map: map,
+      icon: icon,
+      title: place.name,
+      position: place.geometry.location,
+      id: place.id
+    });
+    placesMarkers.push(marker);
+  });
 }
 
 document.getElementById('show-listings').addEventListener('click', function(){
@@ -124,7 +182,7 @@ document.getElementById('show-listings').addEventListener('click', function(){
 });
 
 document.getElementById('hide-listings').addEventListener('click', function(){
-  hideListings()
+  hideListings(markers)
 });
 
 document.getElementById('zoom-to-area').addEventListener('click', function(){
@@ -156,7 +214,7 @@ document.getElementById('search-within-time').addEventListener('click', function
     alert('No address specified.');
   }
   else{
-    hideListings();
+    hideListings(markers);
     var origins = [];
     for(var i = 0; i < markers.length; i++){
       origins[i] = markers[i].position;
@@ -210,7 +268,7 @@ function displayMarkersWithin(response){
   }
 }
 
-function hideListings(){
+function hideListings(markers){
   markers.forEach(function(m){
     m.setMap(null);
   });

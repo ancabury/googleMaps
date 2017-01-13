@@ -44,6 +44,12 @@
           <input id="search-within-time-text" type="text" placeholder="Ex: Google Office NYC or 75 9th Ave, New York, NY">
           <input id="search-within-time" type="button" value="Go">
         </div>
+
+        <div>
+          <span class="text">Search for nearby places</span>
+          <input id="places-search" type="text">
+          <input id="go-search-places" type="button" value="Go">
+        </div>
       </div>
 
       <div id='map'> </div>
@@ -51,7 +57,7 @@
     </div>
     <script type='text/javascript' src='google-maps.js'> </script>
     <script async defer
-      src='https://maps.googleapis.com/maps/api/js?libraries=geometry,drawing&key=AIzaSyAe2v4Xx_jWuZWC-dg3sGPTN4_MTR48mXg&v=3&callback=initMap'
+      src='https://maps.googleapis.com/maps/api/js?libraries=geometry,places,drawing&key=AIzaSyAe2v4Xx_jWuZWC-dg3sGPTN4_MTR48mXg&v=3&callback=initMap'
       >
     </script>
   </body>
