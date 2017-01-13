@@ -173,8 +173,35 @@ function createPlacesMarkers(places) {
       position: place.geometry.location,
       id: place.id
     });
+
+    var placeInfoWindow = new google.maps.InfoWindow();
+    marker.addListener('click', function() {
+      if(placeInfoWindow.marker != this)
+        getPlaceDetails(this, place, placeInfoWindow);
+    });
+
     placesMarkers.push(marker);
   });
+}
+
+function getPlaceDetails(marker, place, infoWindow){
+  var service = new google.maps.places.PlacesService(map);
+  service.getDetails(place, function(result, status) {
+    if (status == google.maps.places.PlacesServiceStatus.OK){
+      infoWindow.marker = marker;
+      var html = '<div>';
+      if (result.name)
+        html += '<strong>' + result.name + '</strong>';
+      if (result.formatted_address)
+        html += '<br>' + result.formatted_address;
+      html += '</div>';
+      infoWindow.setContent(html);
+      infoWindow.open(map, marker);
+      infoWindow.addListener('closeclick', function() {
+        infoWindow.marker = null;
+      });
+    }
+  })
 }
 
 document.getElementById('show-listings').addEventListener('click', function(){
