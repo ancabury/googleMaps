@@ -18,3 +18,6 @@ or with [mode specified](https://maps.googleapis.com/maps/api/distancematrix/jso
 - will need place_id
 - [link](https://maps.googleapis.com/maps/api/place/details/json?placeid=ChIJH9DF2gIMSUcRE51VDkgEZos&key=AIzaSyAe2v4Xx_jWuZWC-dg3sGPTN4_MTR48mXg)
 - [get photo](https://maps.googleapis.com/maps/api/photo?photoreference=CoQBdwAAAHg-fqVKY1X98BaqaS0HXu7FX145n42pzDfX26o4iC4d-TaN2SlP6V5h5UU8QXIV00OUeoatLyNkxeQe-JaaHwjJ_cc9r5iSng4xA0n9lmuBp5cuG3CHHaRYenYrSdeCSRAQJEFFErkxQhirnUtqJ8qoq8V_4mSmjnTrLx0LYnF5EhDuAShRMjwOd2opumaXKRk-GhQsc7xW7dHYIrOrTo7AyFu_EiG7Pg&key=AIzaSyAe2v4Xx_jWuZWC-dg3sGPTN4_MTR48mXg)
+
+#Timezone
+- get timezone [example link](https://maps.googleapis.com/maps/api/timezone/json?location=33.1262476,-117.3115765&timestamp=1484308402&key=AIzaSyAe2v4Xx_jWuZWC-dg3sGPTN4_MTR48mXg)
